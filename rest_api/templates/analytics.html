@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Анализ рынка аренды жилья Москвы</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f0f2f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .stat-value { font-size: 28px; font-weight: bold; color: #2c3e50; }
+        .stat-label { color: #7f8c8d; margin-top: 5px; }
+        .chart-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+        .chart-card { background: white; padding: 20px; border-radius: 12px; flex: 1; min-width: 300px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        canvas { max-height: 300px; width: 100% !important; }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Анализ рынка аренды жилья Москвы</h1>
+
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value">30</div><div class="stat-label">Всего квартир</div></div>
+            <div class="stat-card"><div class="stat-value">95 000 ₽</div><div class="stat-label">Средняя цена</div></div>
+            <div class="stat-card"><div class="stat-value">55.0 м²</div><div class="stat-label">Средняя площадь</div></div>
+            <div class="stat-card"><div class="stat-value">45 000 - 250 000 ₽</div><div class="stat-label">Диапазон цен</div></div>
+        </div>
+
+        <div class="chart-row">
+            <div class="chart-card">
+                <h3>Средняя цена по районам</h3>
+                <canvas id="districtsChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Распределение цен</h3>
+                <canvas id="histogramChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-row">
+            <div class="chart-card">
+                <h3>Распределение по комнатам</h3>
+                <canvas id="roomsChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Экология vs Цена</h3>
+                <canvas id="ecologyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const districts = [
+            { district: "Хамовники", avg_price: 180000 },
+            { district: "Пресненский", avg_price: 165000 },
+            { district: "Тверской", avg_price: 155000 },
+            { district: "Арбат", avg_price: 150000 },
+            { district: "Якиманка", avg_price: 145000 },
+            { district: "Чертаново", avg_price: 95000 },
+            { district: "Крылатское", avg_price: 88000 },
+            { district: "Строгино", avg_price: 85000 },
+            { district: "Ясенево", avg_price: 80000 },
+            { district: "Бутово", avg_price: 70000 },
+            { district: "Марьино", avg_price: 65000 },
+            { district: "Академический", avg_price: 75000 }
+        ];
+        const histogram = [
+            { range: "30-50k", count: 2 },
+            { range: "50-70k", count: 5 },
+            { range: "70-100k", count: 8 },
+            { range: "100-150k", count: 9 },
+            { range: "150-200k", count: 4 },
+            { range: "200k+", count: 2 }
+        ];
+        const topDistricts = districts.slice(0, 6);
+        new Chart(document.getElementById('districtsChart'), {
+            type: 'bar',
+            data: {
+                labels: topDistricts.map(d => d.district),
+                datasets: [{ label: 'Средняя цена (руб.)', data: topDistricts.map(d => d.avg_price), backgroundColor: '#3498db' }]
+            }
+        });
+        new Chart(document.getElementById('histogramChart'), {
+            type: 'bar',
+            data: {
+                labels: histogram.map(h => h.range),
+                datasets: [{ label: 'Количество квартир', data: histogram.map(h => h.count), backgroundColor: '#2ecc71' }]
+            }
+        });
+        new Chart(document.getElementById('roomsChart'), {
+            type: 'pie',
+            data: {
+                labels: ['1-комнатные (10)', '2-комнатные (12)', '3-комнатные (8)'],
+                datasets: [{ data: [10, 12, 8], backgroundColor: ['#3498db', '#2ecc71', '#e74c3c'] }]
+            }
+        });
+        new Chart(document.getElementById('ecologyChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Хорошая экология (7-10 баллов)', 'Плохая экология (0-4 балла)'],
+                datasets: [{ label: 'Средняя цена (руб.)', data: [110000, 68000], backgroundColor: ['#2ecc71', '#e74c3c'] }]
+            }
+        });
+    </script>
+</body>
+</html>
